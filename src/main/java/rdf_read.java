@@ -52,13 +52,13 @@ public class rdf_read {
 
         ExtendedIterator<OntClass> iterator = model.listClasses();
         List<String> classes=new ArrayList<String>();
-        HashMap<String,List<String>>ClassSuperclassUris=new HashMap<String,List<String>>();
-        HashMap<String,String>UrisToClassLabel=new HashMap<String,String>();
-        List<List<String>> AllProps=new ArrayList<List<String>>();
+        HashMap<String,List<String>> ClassSuperclassUris=new HashMap<String,List<String>>();
+        HashMap<String,String> UrisToClassLabel=new HashMap<String,String>();
+        Set<List<String>> AllProps=new HashSet<List<String>>();
         while (iterator.hasNext()){
             OntClass ontClass = (OntClass) iterator.next();
             String uri=ontClass.getURI();
-            System.out.println("Class is : " + ontClass.toString());
+            System.out.println("Class is : " + ontClass.getLabel("en"));
 //            ontClass.getLocalName();
 //            System.out.println("Label is :"+ontClass.getLabel("en"));
             UrisToClassLabel.put(ontClass.toString(), ontClass.getLabel("en"));
@@ -70,7 +70,7 @@ public class rdf_read {
 //            }
             if(ontClass.hasSuperClass()){
 //                System.out.println("SuperClassLabel is :"+ ontClass.getLabel("en"));
-                System.out.println("SuperClass is : " + ontClass.getSuperClass());
+                System.out.println("SuperClass is : " + ontClass.getSuperClass().getLabel("en"));
                 if(ClassSuperclassUris.containsKey(ontClass.toString())){
                     List<String> temp=ClassSuperclassUris.get(ontClass.toString());
                     temp.add(ontClass.getSuperClass().toString());
@@ -82,6 +82,7 @@ public class rdf_read {
                     ClassSuperclassUris.put(ontClass.getLabel("en"),temp);
                 }
 
+
             }
 
             //Trying to get properties
@@ -92,10 +93,19 @@ public class rdf_read {
 //                System.out.println(iterprop.next());
                 OntProperty prop=(OntProperty) iterprop.next();
                 String domain="";
-                domain=domain+prop.getDomain();
+                domain=domain+prop.getDomain().getLabel("en");
 
                 String range="";
-                range=range+prop.getRange();
+
+                if(prop.getRange().isOntLanguageTerm()){
+                    range=range+prop.getRange().getLocalName();
+//                    System.out.println("Range of property "+prop.getLabel("en")+" is "+prop.getRange().getLocalName());
+                }
+                else {
+                    range=range+prop.getRange().getLabel("en");
+//                     System.out.println("Range of property "+prop.getLabel("en")+" is "+prop.getRange().getLabel("en"));
+                }
+//                System.out.println("Property is " + prop.getLabel("en") + " Domain is: "+ domain + " and Range is: "+range);
                 List<String>temp=new ArrayList<String>();
                 temp.add(prop.getLabel("en"));
                 temp.add(domain);
@@ -106,7 +116,7 @@ public class rdf_read {
             }
         //End of master while
         }
-
+        System.out.println("Classes are: ");
         for(int i=0;i<classes.size();i++){
             System.out.println(classes.get(i));
         }
@@ -145,10 +155,14 @@ public class rdf_read {
         }
 //=====================================================================================================
         //Properties
-        for(int i=0;i<AllProps.size();i++){
-            List<String>inside=AllProps.get(i);
-            System.out.println(inside.get(0)+" "+UrisToClassLabel.get(inside.get(1))+" "+UrisToClassLabel.get(inside.get(2)));
+        Iterator i = AllProps.iterator();
+        System.out.println("Properties are ");
+        while (i.hasNext()) {
+            List<String> next = (List<String>) i.next();
+            System.out.println("Property: "+next.get(0)+" Domain: "+next.get(1)+" Range: "+next.get(2));
         }
+
+
 
 
 
