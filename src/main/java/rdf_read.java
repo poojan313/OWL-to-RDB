@@ -12,7 +12,7 @@ public class rdf_read {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         String ns = "http://www.w3.org/2002/07/owl#";
         // use the RDFDataMgr to find the input file
-        InputStream in = RDFDataMgr.open("src/main/resources/First.owl");
+        InputStream in = RDFDataMgr.open("src/main/resources/protege.owl");
         if (in == null) {
             throw new IllegalArgumentException(
                     "File: sample.rdf +  not found");
@@ -21,24 +21,24 @@ public class rdf_read {
 // read the RDF/XML file
         model.read(in, null);
 
-//        ExtendedIterator<OntClass> iterator = model.listClasses();
-//        while (iterator.hasNext()) {
-//            OntClass ontClass = (OntClass) iterator.next();
-////            ExtendedIterator<? extends OntResource> iterator1 = ontClass.listInstances();
-////            while (iterator1.hasNext()){
-////                StmtIterator iterator2 = iterator1.next().getModel().listStatements();
-////                while (iterator2.hasNext()){
-////                    System.out.println(iterator2.);
-////                }
-////            }
-//            System.out.println("Class is : " + ontClass.toString());
-//            if (ontClass.hasSubClass()) {
-//                System.out.println("SubClass is : " + ontClass.getSubClass());
+        ExtendedIterator<OntClass> iterator = model.listClasses();
+        while (iterator.hasNext()) {
+            OntClass ontClass = (OntClass) iterator.next();
+//            ExtendedIterator<? extends OntResource> iterator1 = ontClass.listInstances();
+//            while (iterator1.hasNext()){
+//                StmtIterator iterator2 = iterator1.next().getModel().listStatements();
+//                while (iterator2.hasNext()){
+//                    System.out.println(iterator2.);
+//                }
 //            }
-//            if (ontClass.hasSuperClass()) {
-//                System.out.println("SuperClass is : " + ontClass.getSuperClass());
-//            }
-//        }
+            System.out.println("Class is : " + ontClass.toString());
+            if (ontClass.hasSubClass()) {
+                System.out.println("SubClass is : " + ontClass.getSubClass());
+            }
+            if (ontClass.hasSuperClass()) {
+                System.out.println("SuperClass is : " + ontClass.getSuperClass());
+            }
+        }
 
 //        ExtendedIterator<ObjectProperty> nodeIterator = model.listObjectProperties();
 //        while (nodeIterator.hasNext()) {
