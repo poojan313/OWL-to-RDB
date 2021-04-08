@@ -53,7 +53,8 @@ public class rdf_read {
         ExtendedIterator<OntClass> iterator = model.listClasses();
         List<String> classes=new ArrayList<String>();
         HashMap<String,List<String>> ClassSuperclassUris=new HashMap<String,List<String>>();
-        HashMap<String,String> UrisToClassLabel=new HashMap<String,String>();
+        HashMap<String,String> URItoName = new HashMap<String, String>();
+//        HashMap<String,String> UrisToClassLabel=new HashMap<String,String>();
         Set<List<String>> AllProps=new HashSet<List<String>>();
         while (iterator.hasNext()){
             OntClass ontClass = (OntClass) iterator.next();
@@ -61,26 +62,31 @@ public class rdf_read {
             System.out.println("Class is : " + ontClass.getLabel("en"));
 //            ontClass.getLocalName();
 //            System.out.println("Label is :"+ontClass.getLabel("en"));
-            UrisToClassLabel.put(ontClass.toString(), ontClass.getLabel("en"));
+//            UrisToClassLabel.put(ontClass.toString(), ontClass.getLabel("en"));
             classes.add( ontClass.getLabel("en"));
 //            if(ontClass.hasSubClass()){
 //                System.out.println("SubClass is : " + ontClass.getSubClass());
 //                OntClass subclass=ontClass.getSubClass();
 ////                System.out.println("Subclass Label is :"+ ontClass.getLabel("en"));
 //            }
-            if(ontClass.hasSuperClass()){
+            if(ontClass.hasSubClass()){
 //                System.out.println("SuperClassLabel is :"+ ontClass.getLabel("en"));
-                System.out.println("SuperClass is : " + ontClass.getSuperClass().getLabel("en"));
-                if(ClassSuperclassUris.containsKey(ontClass.toString())){
-                    List<String> temp=ClassSuperclassUris.get(ontClass.toString());
-                    temp.add(ontClass.getSuperClass().toString());
-                    ClassSuperclassUris.put(ontClass.getLabel("en"),temp);
+                ExtendedIterator<OntClass> iterator1 = ontClass.listSubClasses();
+                while (iterator1.hasNext()){
+                    OntClass c = iterator1.next();
+                    System.out.println("SubClass is : " + c.getLabel("en"));
+                    if(ClassSuperclassUris.containsKey(ontClass.getLabel("en"))){
+                        List<String> temp=ClassSuperclassUris.get(ontClass.getLabel("en"));
+                        temp.add(c.getLabel("en"));
+                        ClassSuperclassUris.put(ontClass.getLabel("en"),temp);
+                    }
+                    else{
+                        List<String> temp=new ArrayList<String>();
+                        temp.add(c.getLabel("en"));
+                        ClassSuperclassUris.put(ontClass.getLabel("en"),temp);
+                    }
                 }
-                else{
-                    List<String> temp=new ArrayList<String>();
-                    temp.add(ontClass.getSuperClass().toString());
-                    ClassSuperclassUris.put(ontClass.getLabel("en"),temp);
-                }
+
 
 
             }
@@ -120,31 +126,31 @@ public class rdf_read {
         for(int i=0;i<classes.size();i++){
             System.out.println(classes.get(i));
         }
-        HashMap<String,List<String>>ClassSubClass=new HashMap<String, List<String>>();
-        Iterator itr = ClassSuperclassUris.entrySet().iterator();
-
-        while(itr.hasNext()){
-            Map.Entry ele = (Map.Entry)itr.next();
-            List<String>temp= (List<String>) ele.getValue();
-            List<String>ans=new ArrayList<String>();
-            for(int i=0;i<temp.size();i++){
-                String s=UrisToClassLabel.get(temp.get(i));
-                if(ClassSubClass.containsKey(s)){
-                    List<String>inside=ClassSubClass.get(s);
-                    inside.add((String) ele.getKey());
-                    ClassSubClass.put(s,inside);
-                }
-                else{
-                    List<String>inside=new ArrayList<String>();
-                    inside.add((String) ele.getKey());
-                    ClassSubClass.put(s,inside);
-                }
-            }
-
-        }
-        System.out.println(ClassSubClass.size());
-        Iterator iter = ClassSubClass.entrySet().iterator();
-        for (Map.Entry ele : ClassSubClass.entrySet()){
+//        HashMap<String,List<String>>ClassSubClass=new HashMap<String, List<String>>();
+//        Iterator itr = ClassSuperclassUris.entrySet().iterator();
+//
+//        while(itr.hasNext()){
+//            Map.Entry ele = (Map.Entry)itr.next();
+//            List<String>temp= (List<String>) ele.getValue();
+//            List<String>ans=new ArrayList<String>();
+//            for(int i=0;i<temp.size();i++){
+//                String s=UrisToClassLabel.get(temp.get(i));
+//                if(ClassSubClass.containsKey(s)){
+//                    List<String>inside=ClassSubClass.get(s);
+//                    inside.add((String) ele.getKey());
+//                    ClassSubClass.put(s,inside);
+//                }
+//                else{
+//                    List<String>inside=new ArrayList<String>();
+//                    inside.add((String) ele.getKey());
+//                    ClassSubClass.put(s,inside);
+//                }
+//            }
+//
+//        }
+        System.out.println(ClassSuperclassUris.size());
+        Iterator iter = ClassSuperclassUris.entrySet().iterator();
+        for (Map.Entry ele : ClassSuperclassUris.entrySet()){
 //            Map.Entry ele = (Map.Entry)itr.next();
             List<String>temp= (List<String>) ele.getValue();
             System.out.println("Class is :" + ele.getKey());
@@ -159,6 +165,7 @@ public class rdf_read {
         System.out.println("Properties are ");
         while (i.hasNext()) {
             List<String> next = (List<String>) i.next();
+            System.out.println("Property is: " + model.getOntClass(next.get(1)).getLabel("en"));
             System.out.println("Property: "+next.get(0)+" Domain: "+next.get(1)+" Range: "+next.get(2));
         }
 
