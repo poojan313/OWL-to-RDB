@@ -8,10 +8,17 @@
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:untitled-ontology-3="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#">
     <owl:Ontology rdf:about="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3"/>
+<<<<<<< HEAD
     
 
 
     <!-- 
+=======
+
+
+
+    <!--
+>>>>>>> upstream/master
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Object Properties
@@ -19,7 +26,11 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLObjectProperty_132ec307_5827_42dc_83c4_2bf789526070 -->
@@ -30,7 +41,11 @@
         <rdfs:range rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_f233525b_2e12_4c1d_a981_b9617909c047"/>
         <rdfs:label xml:lang="en">Teaches</rdfs:label>
     </owl:ObjectProperty>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLObjectProperty_828e72d7_adf0_4f82_b921_5be336cff515 -->
@@ -41,10 +56,17 @@
         <rdfs:range rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_f233525b_2e12_4c1d_a981_b9617909c047"/>
         <rdfs:label xml:lang="en">Studies</rdfs:label>
     </owl:ObjectProperty>
+<<<<<<< HEAD
     
 
 
     <!-- 
+=======
+
+
+
+    <!--
+>>>>>>> upstream/master
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Data properties
@@ -52,7 +74,11 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLDataProperty_0b72d424_28c3_4a66_9599_0b38c44d2663 -->
@@ -63,7 +89,11 @@
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
         <rdfs:label xml:lang="en">index_number</rdfs:label>
     </owl:DatatypeProperty>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLDataProperty_9d9f1283_2d43_4ad8_a93f_cc9c9419081c -->
@@ -74,7 +104,11 @@
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
         <rdfs:label xml:lang="en">staff_memeber</rdfs:label>
     </owl:DatatypeProperty>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLDataProperty_b56c2074_453d_4882_acb3_6623af285883 -->
@@ -85,7 +119,11 @@
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
         <rdfs:label xml:lang="en">last_name</rdfs:label>
     </owl:DatatypeProperty>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLDataProperty_f1279b44_aa81_4b8c_a842_8353e0fc2bb5 -->
@@ -96,10 +134,17 @@
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
         <rdfs:label xml:lang="en">first_name</rdfs:label>
     </owl:DatatypeProperty>
+<<<<<<< HEAD
     
 
 
     <!-- 
+=======
+
+
+
+    <!--
+>>>>>>> upstream/master
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Classes
@@ -107,7 +152,11 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_1dbc2d42_6460_45d5_959b_13238046276b -->
@@ -117,7 +166,11 @@
         <owl:disjointWith rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_b58a0478_2882_4988_9f27_be9103f4671b"/>
         <rdfs:label xml:lang="en">CSModule</rdfs:label>
     </owl:Class>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_4ba36ba0_f179_48c4_a1a9_accb88982fc4 -->
@@ -127,7 +180,11 @@
         <owl:disjointWith rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_4e6765bf_53a4_497d_86c2_54eca59283b5"/>
         <rdfs:label xml:lang="en">Teacher</rdfs:label>
     </owl:Class>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_4e6765bf_53a4_497d_86c2_54eca59283b5 -->
@@ -136,7 +193,11 @@
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_c4ed22de_9dca_483b_b987_905140655eef"/>
         <rdfs:label xml:lang="en">Student</rdfs:label>
     </owl:Class>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_b58a0478_2882_4988_9f27_be9103f4671b -->
@@ -145,7 +206,11 @@
         <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_f233525b_2e12_4c1d_a981_b9617909c047"/>
         <rdfs:label xml:lang="en">MathModule</rdfs:label>
     </owl:Class>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_c4ed22de_9dca_483b_b987_905140655eef -->
@@ -154,7 +219,11 @@
         <owl:disjointWith rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_f233525b_2e12_4c1d_a981_b9617909c047"/>
         <rdfs:label xml:lang="en">Person</rdfs:label>
     </owl:Class>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_f233525b_2e12_4c1d_a981_b9617909c047 -->
@@ -162,10 +231,17 @@
     <owl:Class rdf:about="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_f233525b_2e12_4c1d_a981_b9617909c047">
         <rdfs:label xml:lang="en">Module</rdfs:label>
     </owl:Class>
+<<<<<<< HEAD
     
 
 
     <!-- 
+=======
+
+
+
+    <!--
+>>>>>>> upstream/master
     ///////////////////////////////////////////////////////////////////////////////////////
     //
     // Individuals
@@ -173,7 +249,11 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLNamedIndividual_21be4987_9386_49cf_9100_076aa14789e3 -->
@@ -186,7 +266,11 @@
         <OWLDataProperty_f1279b44_aa81_4b8c_a842_8353e0fc2bb5>xyz</OWLDataProperty_f1279b44_aa81_4b8c_a842_8353e0fc2bb5>
         <rdfs:label xml:lang="en">St_1</rdfs:label>
     </owl:NamedIndividual>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLNamedIndividual_23129ed8_b17a_4d61_b3f3_f3b0733a5a54 -->
@@ -195,7 +279,11 @@
         <rdf:type rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_b58a0478_2882_4988_9f27_be9103f4671b"/>
         <rdfs:label xml:lang="en">MA101</rdfs:label>
     </owl:NamedIndividual>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLNamedIndividual_8a1c0b7f_ac96_41bb_9348_102755131d5c -->
@@ -204,7 +292,11 @@
         <rdf:type rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_1dbc2d42_6460_45d5_959b_13238046276b"/>
         <rdfs:label xml:lang="en">CS605</rdfs:label>
     </owl:NamedIndividual>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLNamedIndividual_b095bdf6_5a83_4ff5_86a8_625f3a41f053 -->
@@ -213,7 +305,11 @@
         <rdf:type rdf:resource="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLClass_1dbc2d42_6460_45d5_959b_13238046276b"/>
         <rdfs:label xml:lang="en">AI829</rdfs:label>
     </owl:NamedIndividual>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> upstream/master
 
 
     <!-- http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#OWLNamedIndividual_bd0451e8_97c8_4c8f_b39b_abc16d1a6d7e -->
@@ -227,7 +323,10 @@
     </owl:NamedIndividual>
 </rdf:RDF>
 
+<<<<<<< HEAD
 
 
 <!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
 
+=======
+>>>>>>> upstream/master
