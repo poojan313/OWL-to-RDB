@@ -13,7 +13,7 @@ public class rdf_read {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         String ns = "http://www.w3.org/2002/07/owl#";
         // use the RDFDataMgr to find the input file
-        InputStream in = RDFDataMgr.open("src/main/resources/protege.owl");
+        InputStream in = RDFDataMgr.open("src/main/resources/First.owl");
         if (in == null) {
             throw new IllegalArgumentException(
                     "File: sample.rdf +  not found");
@@ -32,25 +32,42 @@ public class rdf_read {
             OntClass ontClass = (OntClass) iterator.next();
             URItoName.put(ontClass.getLocalName(),ontClass.getLabel("en"));
             List<String> cols = new ArrayList<String>();
-            String str = ontClass.getLabel("en")+ "_ID";
-            cols.add(str);
-            ColumnTypes.put(str,"int");
-            System.out.println("Class is : " + ontClass.getLabel("en"));
+            String str;
+            if(ontClass.getLabel("en")!=null){
+                str = ontClass.getLabel("en");
+            }
+            else{
+                str = ontClass.getLocalName();
+            }
+            cols.add(str + "_ID");
+            ColumnTypes.put(str + "_ID","int");
+            System.out.println("Class is : " + str);
             if (ontClass.hasSuperClass()) {
                 List<String> subClasses;
-                if(refInt.containsKey(ontClass.getSuperClass().getLabel("en"))){
+                String superClass;
+                if(ontClass.getSuperClass().getLabel("en")!=null && refInt.containsKey(ontClass.getSuperClass().getLabel("en"))){
+                    superClass = ontClass.getSuperClass().getLabel("en");
                     subClasses = refInt.get(ontClass.getSuperClass().getLabel("en"));
+                }
+                else if(ontClass.getSuperClass().getLocalName()!=null && refInt.containsKey(ontClass.getSuperClass().getLocalName())){
+                    System.out.println("onfoasndfas");
+                    superClass = ontClass.getSuperClass().getLocalName();
+                    subClasses = refInt.get(ontClass.getSuperClass().getLocalName());
                 }
                 else {
                     subClasses = new ArrayList<String>();
+                    if (ontClass.getSuperClass().getLabel("en") == null)
+                        superClass = ontClass.getSuperClass().getLocalName();
+                    else
+                        superClass = ontClass.getSuperClass().getLabel("en");
                 }
-                subClasses.add(ontClass.getLabel("en"));
-                refInt.put(ontClass.getSuperClass().getLabel("en"),subClasses);
-                String id = TableColumn.get(ontClass.getSuperClass().getLabel("en")).get(0);
+                subClasses.add(str);
+                refInt.put(superClass,subClasses);
+                String id = TableColumn.get(superClass).get(0);
                 cols.add(id);
-                System.out.println("SuperClass is : " + ontClass.getSuperClass().getLabel("en"));
+                System.out.println("SuperClass is : " + superClass);
             }
-            TableColumn.put(ontClass.getLabel("en"),cols);
+            TableColumn.put(str,cols);
         }
 //        System.out.println("/**************************************************************/");
 //        Iterator<Map.Entry<String, List<String>>> it = TableColumn.entrySet().iterator();
@@ -68,45 +85,78 @@ public class rdf_read {
         ExtendedIterator<ObjectProperty> nodeIterator = model.listObjectProperties();
         while (nodeIterator.hasNext()) {
             ObjectProperty objectProperty = (ObjectProperty) nodeIterator.next();
-            System.out.println("Object property is : " + objectProperty.getLabel("en"));
+            String opname;
+            if(objectProperty.getLabel("en") == null)
+                opname = objectProperty.getLocalName();
+            else
+                opname = objectProperty.getLabel("en");
+            System.out.println("Object property is : " + opname);
             List<String> cols = new ArrayList<String>();
             URItoName.put(objectProperty.getLocalName(),objectProperty.getLabel("en"));
-            String colname = objectProperty.getLabel("en") + "_ID";
-            cols.add(colname);
-            ColumnTypes.put(colname,"int");
 //            System.out.println("Domain is: " + objectProperty.getDomain().toString());
             ExtendedIterator<? extends OntProperty> extendedIterator = objectProperty.listInverseOf();
             if (extendedIterator.hasNext()) {
-                System.out.println("Inverse Object property of: " + objectProperty.getInverseOf().getLabel("en"));
-                System.out.println("Domain is: " + objectProperty.getInverseOf().getRange().getLabel("en"));
-                System.out.println("Range is: " + objectProperty.getInverseOf().getDomain().getLabel("en"));
-            } else {
-                System.out.println("Domain is: " + objectProperty.getDomain().getLabel("en"));
-                cols.add(TableColumn.get(objectProperty.getDomain().getLabel("en")).get(0));
-                System.out.println("Range is: " + objectProperty.getRange().getLabel("en"));
-                cols.add(TableColumn.get(objectProperty.getRange().getLabel("en")).get(0));
-                TableColumn.put(objectProperty.getLabel("en"),cols);
-                List<String> str1 = new ArrayList<String>();
-                str1 = TableColumn.get(objectProperty.getDomain().getLabel("en"));
-                str1.add(colname);
-                TableColumn.put(objectProperty.getDomain().getLabel("en"),str1);
-                str1 = TableColumn.get(objectProperty.getRange().getLabel("en"));
-                str1.add(colname);
-                TableColumn.put(objectProperty.getRange().getLabel("en"),str1);
-                if(refInt.containsKey(objectProperty.getDomain().getLabel("en"))){
-                    str1 = refInt.get(objectProperty.getDomain().getLabel("en"));
+                String iObj, iDomain, iRange;
+                if(objectProperty.getInverseOf().getLabel("en")!=null)
+                    iObj = objectProperty.getInverseOf().getLabel("en");
+                else
+                    iObj = objectProperty.getInverseOf().getLocalName();
+
+                if (objectProperty.getInverseOf().getRange().getLabel("en")!=null)
+                    iDomain = objectProperty.getInverseOf().getRange().getLabel("en");
+                else
+                    iDomain = objectProperty.getInverseOf().getRange().getLocalName();
+
+                if(objectProperty.getInverseOf().getDomain().getLabel("en")!=null)
+                    iRange = objectProperty.getInverseOf().getDomain().getLabel("en");
+                else
+                    iRange = objectProperty.getInverseOf().getDomain().getLocalName();
+
+
+                System.out.println("Inverse Object property of: " + iObj);
+                System.out.println("Domain is: " + iDomain);
+                System.out.println("Range is: " + iRange);
+                cols.add(TableColumn.get(iDomain).get(0));
+                cols.add(TableColumn.get(iRange).get(0));
+                List<String> references;
+                if(refInt.containsKey(iDomain))
+                    references = refInt.get(iDomain);
+                else
+                    references = new ArrayList<String>();
+                references.add(iRange);
+                refInt.put(iDomain,references);
+                TableColumn.put(opname,cols);
+            }
+            else {
+                String domain,range;
+                if(objectProperty.getDomain().getLabel("en")== null)
+                    domain = objectProperty.getDomain().getLocalName();
+                else
+                    domain = objectProperty.getDomain().getLabel("en");
+                if(objectProperty.getRange().getLabel("en")== null)
+                    range = objectProperty.getRange().getLocalName();
+                else
+                    range = objectProperty.getRange().getLabel("en");
+                System.out.println("Domain is: " + domain);
+                cols.add(TableColumn.get(domain).get(0));
+                System.out.println("Range is: " + range);
+                cols.add(TableColumn.get(range).get(0));
+                TableColumn.put(opname,cols);
+                List<String> str1;
+                if(refInt.containsKey(domain)){
+                    str1 = refInt.get(domain);
                 }
                 else
                     str1 = new ArrayList<String>();
-                str1.add(objectProperty.getLabel("en"));
-                refInt.put(objectProperty.getDomain().getLabel("en"),str1);
-                if(refInt.containsKey(objectProperty.getRange().getLabel("en"))){
-                    str1 = refInt.get(objectProperty.getRange().getLabel("en"));
+                str1.add(opname);
+                refInt.put(domain,str1);
+                if(refInt.containsKey(range)){
+                    str1 = refInt.get(range);
                 }
                 else
                     str1 = new ArrayList<String>();
-                str1.add(objectProperty.getLabel("en"));
-                refInt.put(objectProperty.getRange().getLabel("en"),str1);
+                str1.add(opname);
+                refInt.put(range,str1);
             }
 
         }
@@ -125,21 +175,29 @@ public class rdf_read {
         ExtendedIterator<DatatypeProperty> iterator2 = model.listDatatypeProperties();
         while (iterator2.hasNext()) {
             DatatypeProperty datatypeProperty = (DatatypeProperty) iterator2.next();
-            System.out.println("Datatype property is: " + datatypeProperty.getLabel("en"));
-            System.out.println("Domain is: " + datatypeProperty.getDomain().getLabel("en"));
-            List<String> str = TableColumn.get(datatypeProperty.getDomain().getLabel("en"));
-            str.add(datatypeProperty.getLabel("en"));
+            String dpname,domain,range;
+            if(datatypeProperty.getLabel("en") == null)
+                dpname = datatypeProperty.getLocalName();
+            else
+                dpname = datatypeProperty.getLabel("en");
+            System.out.println("Datatype property is: " + dpname);
+            if(datatypeProperty.getDomain().getLabel("en")==null)
+                domain = datatypeProperty.getDomain().getLocalName();
+            else
+                domain = datatypeProperty.getDomain().getLabel("en");
+            if(datatypeProperty.getRange().getLabel("en")==null)
+                range = datatypeProperty.getRange().getLocalName();
+            else
+                range = datatypeProperty.getRange().getLabel("en");
+
+
+            System.out.println("Domain is: " + domain);
+            List<String> str = TableColumn.get(domain);
+            str.add(dpname);
             URItoName.put(datatypeProperty.getLocalName(),datatypeProperty.getLabel("en"));
-            TableColumn.put(datatypeProperty.getDomain().getLabel("en"),str);
-            Iterator<String> iterator1 = refInt.get(datatypeProperty.getDomain().getLabel("en")).iterator();
-            while (iterator1.hasNext()){
-                String sub = iterator1.next();
-                List<String> strings = TableColumn.get(sub);
-                strings.add(datatypeProperty.getLabel("en"));
-                TableColumn.put(sub,strings);
-            }
-            ColumnTypes.put(datatypeProperty.getLabel("en"),datatypeProperty.getRange().getLocalName());
-            System.out.println("Range is: " + datatypeProperty.getRange().getLocalName());
+            TableColumn.put(domain,str);
+            ColumnTypes.put(dpname,range);
+            System.out.println("Range is: " + range);
         }
         System.out.println("/**************************************************************/");
         Iterator<Map.Entry<String, List<String>>> it = TableColumn.entrySet().iterator();
@@ -208,35 +266,35 @@ public class rdf_read {
 //            RDFList members = allDifferentExtendedIterator.next().getDistinctMembers();
 //            System.out.println(members.toString());
 //        }
-//        StmtIterator iterator2 = model.listStatements();
-//        while (iterator2.hasNext()) {
-//            System.out.println("*************************************");
-//            Statement statement = iterator2.nextStatement();
-//            Resource subject = statement.getSubject();
-//            Property predicate = statement.getPredicate();
-//            RDFNode object = statement.getObject();
-////            System.out.println(statement.getProperty(predicate).toString());
-//            System.out.println("Subject is: " + subject.getLocalName());
-//            System.out.println("Predicate is: " + predicate.getLocalName());
-//            if(object.isLiteral())
-//            {
-////                System.out.println("These values have to be added in the database");
-//                System.out.println("Object is: " + object.asLiteral().getString());
-//            }
-//
-//            else if(object.isResource())
-//            {
-////                StmtIterator iterator = subject.listProperties();
-////                while (iterator.hasNext()){
-////                    System.out.println("Properties for "+ subject.getLocalName()+ " is: "+ iterator.next().getSubject().getLocalName());
-////                }
-//                System.out.println("Object asResource is: " + object.asResource().getLocalName());
-//            }
-//
-//            else
-//                System.out.println("Object is: " + object.toString());
-//
-//        }
+        StmtIterator iterator3 = model.listStatements();
+        while (iterator3.hasNext()) {
+            System.out.println("*************************************");
+            Statement statement = iterator3.nextStatement();
+            Resource subject = statement.getSubject();
+            Property predicate = statement.getPredicate();
+            RDFNode object = statement.getObject();
+//            System.out.println(statement.getProperty(predicate).toString());
+            System.out.println("Subject is: " + subject.getLocalName());
+            System.out.println("Predicate is: " + predicate.getLocalName());
+            if(object.isLiteral())
+            {
+//                System.out.println("These values have to be added in the database");
+                System.out.println("Object is: " + object.asLiteral().getString());
+            }
+
+            else if(object.isResource())
+            {
+//                StmtIterator iterator = subject.listProperties();
+//                while (iterator.hasNext()){
+//                    System.out.println("Properties for "+ subject.getLocalName()+ " is: "+ iterator.next().getSubject().getLocalName());
+//                }
+                System.out.println("Object asResource is: " + object.asResource().getLocalName());
+            }
+
+            else
+                System.out.println("Object is: " + object.toString());
+
+        }
 // write it to standard out
 //        model.write(System.out);
     }

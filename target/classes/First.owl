@@ -9,11 +9,12 @@
      xmlns:untitled-ontology-3="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#">
     <owl:Ontology rdf:about="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3"/>
 
-<owl:Class rdf:ID="MusicalWork"/>
+
 <owl:Class rdf:ID="Opera">
   <rdfs:subClassOf rdf:resource="#MusicalWork" />
 </owl:Class>
 
+<owl:Class rdf:ID="MusicalWork"/>
 <owl:Class rdf:ID="Teacher"/>
 <owl:Class rdf:ID="Student"/>
 
@@ -71,7 +72,7 @@
 </Teacher>
 
 <Student rdf:ID="MT2020041">
-    <rdfs:label> MT2020001 </rdfs:label>
+    <rdfs:label> MT2020041 </rdfs:label>
     <first_name> Poojan </first_name>
     <last_name> Khatri </last_name>
     <Course rdf:resource="#CS506" />
