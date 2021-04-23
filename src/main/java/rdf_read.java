@@ -13,7 +13,7 @@ public class rdf_read {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         String ns = "http://www.w3.org/2002/07/owl#";
         // use the RDFDataMgr to find the input file
-        InputStream in = RDFDataMgr.open("src/main/resources/First.owl");
+        InputStream in = RDFDataMgr.open("src/main/resources/protege.owl");
         if (in == null) {
             throw new IllegalArgumentException(
                     "File: sample.rdf +  not found");
@@ -25,7 +25,8 @@ public class rdf_read {
         HashMap<String,String> URItoName = new HashMap<String, String>();
         HashMap<String, List<String>> TableColumn = new HashMap<String, List<String>>();
         HashMap<String, String> ColumnTypes = new HashMap<String, String>();
-
+        ////////////////////////////////////////
+        // Parsing owl file for classes
         ExtendedIterator<OntClass> iterator = model.listClasses();
         System.out.println("/**************************************************************/");
         while (iterator.hasNext()) {
@@ -69,18 +70,12 @@ public class rdf_read {
             }
             TableColumn.put(str,cols);
         }
-//        System.out.println("/**************************************************************/");
-//        Iterator<Map.Entry<String, List<String>>> it = TableColumn.entrySet().iterator();
-//        while (it.hasNext()){
-//            Map.Entry<String, List<String>> next = it.next();
-//            System.out.print("Table is: "+next.getKey()+" Columns are: ");
-//            List<String> value = next.getValue();
-//            Iterator<String> iterator2 = value.iterator();
-//            while (iterator2.hasNext()){
-//                System.out.print(iterator2.next()+" ");
-//            }
-//            System.out.println();
-//        }
+
+
+        /////////////////////////////////////////////
+        // Parsing owl file for object properties
+
+
         System.out.println("/**************************************************************/");
         ExtendedIterator<ObjectProperty> nodeIterator = model.listObjectProperties();
         while (nodeIterator.hasNext()) {
@@ -119,12 +114,13 @@ public class rdf_read {
                 cols.add(TableColumn.get(iDomain).get(0));
                 cols.add(TableColumn.get(iRange).get(0));
                 List<String> references;
-                if(refInt.containsKey(iDomain))
-                    references = refInt.get(iDomain);
+                if(refInt.containsKey(opname))
+                    references = refInt.get(opname);
                 else
                     references = new ArrayList<String>();
+                references.add(iDomain);
                 references.add(iRange);
-                refInt.put(iDomain,references);
+                refInt.put(opname,references);
                 TableColumn.put(opname,cols);
             }
             else {
@@ -143,38 +139,26 @@ public class rdf_read {
                 cols.add(TableColumn.get(range).get(0));
                 TableColumn.put(opname,cols);
                 List<String> str1;
-                if(refInt.containsKey(domain)){
-                    str1 = refInt.get(domain);
+                if(refInt.containsKey(opname)){
+                    str1 = refInt.get(opname);
                 }
                 else
                     str1 = new ArrayList<String>();
-                str1.add(opname);
-                refInt.put(domain,str1);
-                if(refInt.containsKey(range)){
-                    str1 = refInt.get(range);
-                }
-                else
-                    str1 = new ArrayList<String>();
-                str1.add(opname);
-                refInt.put(range,str1);
+                str1.add(domain);
+                str1.add(range);
+                refInt.put(opname,str1);
             }
 
         }
-//        Iterator<Map.Entry<String, List<String>>> iterator1 = refInt.entrySet().iterator();
-//        while (iterator1.hasNext()){
-//            Map.Entry<String, List<String>> next = iterator1.next();
-//            System.out.print("Table is: "+next.getKey()+" References are: ");
-//            List<String> value = next.getValue();
-//            Iterator<String> iterator2 = value.iterator();
-//            while (iterator2.hasNext()){
-//                System.out.print(iterator2.next()+" ");
-//            }
-//            System.out.println();
-//        }
+
+        ////////////////////////////////////////////////////
+        // Parsing owl file for Datatype Properties
+
+
         System.out.println("/**************************************************************/");
-        ExtendedIterator<DatatypeProperty> iterator2 = model.listDatatypeProperties();
-        while (iterator2.hasNext()) {
-            DatatypeProperty datatypeProperty = (DatatypeProperty) iterator2.next();
+        ExtendedIterator<DatatypeProperty> extendedIterator = model.listDatatypeProperties();
+        while (extendedIterator.hasNext()) {
+            DatatypeProperty datatypeProperty = (DatatypeProperty) extendedIterator.next();
             String dpname,domain,range;
             if(datatypeProperty.getLabel("en") == null)
                 dpname = datatypeProperty.getLocalName();
@@ -199,6 +183,12 @@ public class rdf_read {
             ColumnTypes.put(dpname,range);
             System.out.println("Range is: " + range);
         }
+
+
+        ///////////////////////////////////////////
+        // Printing all Data that has been parsed
+
+
         System.out.println("/**************************************************************/");
         Iterator<Map.Entry<String, List<String>>> it = TableColumn.entrySet().iterator();
         while (it.hasNext()){
@@ -211,92 +201,53 @@ public class rdf_read {
             }
             System.out.println();
         }
+
+
         System.out.println("/**************************************************************/");
-//        Iterator<Map.Entry<String, List<String>>> it = TableColumn.entrySet().iterator();
-//        while (it.hasNext()){
-//            Map.Entry<String, List<String>> next = it.next();
-//            System.out.print("Table is: "+next.getKey()+" Columns are: ");
-//            List<String> value = next.getValue();
-//            Iterator<String> iterator2 = value.iterator();
-//            while (iterator2.hasNext()){
-//                System.out.print(iterator2.next()+" ");
-//            }
-//            System.out.println();
-//        }
-//        Iterator<Map.Entry<String, List<String>>> iterator1 = TableColumn.entrySet().iterator();
-//        while (iterator1.hasNext()){
-//            Map.Entry<String, List<String>> next = iterator1.next();
-//            System.out.print("Table is: "+next.getKey()+" Columns are: ");
-//            List<String> value = next.getValue();
-//            Iterator<String> iterator3 = value.iterator();
-//            while (iterator3.hasNext()){
-//                System.out.print(iterator3.next()+" ");
-//            }
-//            System.out.println();
-//        }
-//        Iterator<Map.Entry<String, String>> iterator1 = ColumnTypes.entrySet().iterator();
-//        while (iterator1.hasNext()){
-//            Map.Entry<String, String> next = iterator1.next();
-//            System.out.println("Column is: " + next.getKey()+ " with Type: "+next.getValue());
-//        }
-
-//        System.out.println("/**************************************************************/");
-//        ExtendedIterator<Individual> individualExtendedIterator = model.listIndividuals();
-//        while (individualExtendedIterator.hasNext()){
-//            Individual next = individualExtendedIterator.next();
-//            System.out.println(next.getLabel("en"));
-//            System.out.println("Belongs to: "+ next.getOntClass().getLabel("en"));
-//            StmtIterator iterator1 = next.listProperties();
-//            while (iterator1.hasNext()){
-//                Statement next1 = iterator1.next();
-//                System.out.println("Subject is : " +next1.getSubject().getLocalName());
-//                System.out.println("Predicte is: "+ next1.getPredicate().getLocalName());
-//
-//                if(next1.getObject().isResource()){
-//                    System.out.println("Object asResource is: "+ URItoName.get(next1.getObject().asResource().getLocalName()));
-//                }
-//                else{
-//                    System.out.println("Object is: "+ next1.getObject().toString());
-//                }
-//            }
-////
-//        }
-//        ExtendedIterator<AllDifferent> allDifferentExtendedIterator = model.listAllDifferent();
-//        while (allDifferentExtendedIterator.hasNext()){
-//            RDFList members = allDifferentExtendedIterator.next().getDistinctMembers();
-//            System.out.println(members.toString());
-//        }
-        StmtIterator iterator3 = model.listStatements();
-        while (iterator3.hasNext()) {
-            System.out.println("*************************************");
-            Statement statement = iterator3.nextStatement();
-            Resource subject = statement.getSubject();
-            Property predicate = statement.getPredicate();
-            RDFNode object = statement.getObject();
-//            System.out.println(statement.getProperty(predicate).toString());
-            System.out.println("Subject is: " + subject.getLocalName());
-            System.out.println("Predicate is: " + predicate.getLocalName());
-            if(object.isLiteral())
-            {
-//                System.out.println("These values have to be added in the database");
-                System.out.println("Object is: " + object.asLiteral().getString());
+        Iterator<Map.Entry<String, List<String>>> iterator1 = refInt.entrySet().iterator();
+        while (iterator1.hasNext()){
+            Map.Entry<String, List<String>> next = iterator1.next();
+            System.out.print("PK Table is: "+next.getKey()+" FK Tables are: ");
+            List<String> value = next.getValue();
+            Iterator<String> it1 = value.iterator();
+            while (it1.hasNext()){
+                System.out.print(it1.next()+" ");
             }
-
-            else if(object.isResource())
-            {
-//                StmtIterator iterator = subject.listProperties();
-//                while (iterator.hasNext()){
-//                    System.out.println("Properties for "+ subject.getLocalName()+ " is: "+ iterator.next().getSubject().getLocalName());
-//                }
-                System.out.println("Object asResource is: " + object.asResource().getLocalName());
-            }
-
-            else
-                System.out.println("Object is: " + object.toString());
-
+            System.out.println();
         }
-// write it to standard out
-//        model.write(System.out);
+
+        System.out.println("/**************************************************************/");
+
+        Iterator<Map.Entry<String, String>> iterator3 = ColumnTypes.entrySet().iterator();
+        while (iterator3.hasNext()){
+            Map.Entry<String, String> next = iterator3.next();
+            System.out.println("Column is: " + next.getKey()+ " with Type: "+next.getValue());
+        }
+
+//        StmtIterator stmtIterator = model.listStatements();
+//        while (stmtIterator.hasNext()) {
+//            System.out.println("*************************************");
+//            Statement statement = stmtIterator.nextStatement();
+//            Resource subject = statement.getSubject();
+//            Property predicate = statement.getPredicate();
+//            RDFNode object = statement.getObject();
+//            System.out.println("Subject is: " + subject.getLocalName());
+//            System.out.println("Predicate is: " + predicate.getLocalName());
+//            if(object.isLiteral())
+//            {
+//                System.out.println("Object is: " + object.asLiteral().getString());
+//            }
+//
+//            else if(object.isResource())
+//            {
+//                System.out.println("Object asResource is: " + object.asResource().getLocalName());
+//            }
+//
+//            else
+//                System.out.println("Object is: " + object.toString());
+//
+//        }
+
     }
 }
 
