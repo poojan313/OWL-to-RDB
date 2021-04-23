@@ -228,16 +228,16 @@ public class rdf_read {
         }
 //=====================================================================================================
         //Properties
-        Iterator i = AllProps.iterator();
-        System.out.println("Properties are ");
-        while (i.hasNext()) {
-            List<String> next = (List<String>) i.next();
-            System.out.println("Property is: " + model.getOntClass(next.get(1)).getLabel("en"));
-            System.out.println("Property: "+next.get(0)+" Domain: "+next.get(1)+" Range: "+next.get(2));
-        }
-
-
-
+//        Iterator i = AllProps.iterator();
+//        System.out.println("Properties are ");
+//        while (i.hasNext()) {
+//            List<String> next = (List<String>) i.next();
+//            System.out.println("Property is: " + model.getOntClass(next.get(1)).getLabel("en"));
+//            System.out.println("Property: "+next.get(0)+" Domain: "+next.get(1)+" Range: "+next.get(2));
+//        }
+//
+//
+//
 
 
 //        ExtendedIterator<ObjectProperty> nodeIterator = model.listObjectProperties();
