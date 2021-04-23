@@ -224,29 +224,29 @@ public class rdf_read {
             System.out.println("Column is: " + next.getKey()+ " with Type: "+next.getValue());
         }
 
-//        StmtIterator stmtIterator = model.listStatements();
-//        while (stmtIterator.hasNext()) {
-//            System.out.println("*************************************");
-//            Statement statement = stmtIterator.nextStatement();
-//            Resource subject = statement.getSubject();
-//            Property predicate = statement.getPredicate();
-//            RDFNode object = statement.getObject();
-//            System.out.println("Subject is: " + subject.getLocalName());
-//            System.out.println("Predicate is: " + predicate.getLocalName());
-//            if(object.isLiteral())
-//            {
-//                System.out.println("Object is: " + object.asLiteral().getString());
-//            }
-//
-//            else if(object.isResource())
-//            {
-//                System.out.println("Object asResource is: " + object.asResource().getLocalName());
-//            }
-//
-//            else
-//                System.out.println("Object is: " + object.toString());
-//
-//        }
+        StmtIterator stmtIterator = model.listStatements();
+        while (stmtIterator.hasNext()) {
+            System.out.println("*************************************");
+            Statement statement = stmtIterator.nextStatement();
+            Resource subject = statement.getSubject();
+            Property predicate = statement.getPredicate();
+            RDFNode object = statement.getObject();
+            System.out.println("Subject is: " + subject.getLocalName());
+            System.out.println("Predicate is: " + predicate.getLocalName());
+            if(object.isLiteral())
+            {
+                System.out.println("Object is: " + object.asLiteral().getString());
+            }
+
+            else if(object.isResource())
+            {
+                System.out.println("Object asResource is: " + object.asResource().getLocalName());
+            }
+
+            else
+                System.out.println("Object is: " + object.toString());
+
+        }
 
     }
 }
