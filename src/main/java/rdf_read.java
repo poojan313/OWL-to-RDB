@@ -3,11 +3,77 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.util.FileManager;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import utils.SessionUtils;
 
 import java.io.InputStream;
 import java.util.*;
 
 public class rdf_read {
+    public void CreateTables(HashMap<String,List<String>> tables,HashMap<String,String> types,HashMap<String,List<String>> references)
+    {
+        List<String> all_q = new ArrayList<String>();
+        Iterator<Map.Entry<String, List<String>>> iterator = tables.entrySet().iterator();
+        while (iterator.hasNext())
+        {
+            Map.Entry<String, List<String>> next = iterator.next();
+            String name = next.getKey();
+            String query = "CREATE TABLE IF NOT EXISTS " + name +"(";
+            Iterator<String> iterator1 = next.getValue().iterator();
+            while (iterator1.hasNext()){
+                String col = iterator1.next();
+                query += col + " " + types.get(col);
+                if (col.equals(name+"_ID"))
+                {
+                    query += " PRIMARY KEY AUTO INCREMENT";
+                }
+                query += ",";
+            }
+            query = query.substring(0,query.length() - 1);
+            query += ")";
+            all_q.add(query);
+        }
+
+        Iterator<String> iterator1 = all_q.iterator();
+        while (iterator1.hasNext())
+        {
+            Session session = SessionUtils.getSession();
+            Transaction transaction =session.beginTransaction();
+            String next = iterator1.next();
+            Query query = session.createSQLQuery(next);
+            query.executeUpdate();
+            transaction.commit();
+        }
+        List<String> updateQueries = new ArrayList<String>();
+        Iterator<Map.Entry<String, List<String>>> iterator2 = references.entrySet().iterator();
+        while (iterator2.hasNext())
+        {
+            Map.Entry<String, List<String>> next = iterator2.next();
+            String name = next.getKey();
+            String query = "ALTER TABLE "+ name ;
+            Iterator<String> iterator3 = next.getValue().iterator();
+            while (iterator3.hasNext()){
+                String next1 = iterator3.next();
+                query += " ADD FOREIGN KEY (" + next1 +"_ID) REFERENCES " + next1+"("+next1+"_ID),";
+            }
+            query = query.substring(0,query.length() - 1);
+            updateQueries.add(query);
+        }
+
+        Iterator<String> iterator3 = updateQueries.iterator();
+        while (iterator3.hasNext()){
+            Session session = SessionUtils.getSession();
+            Transaction transaction =session.beginTransaction();
+            String next = iterator3.next();
+            Query query = session.createSQLQuery(next);
+            query.executeUpdate();
+            transaction.commit();
+        }
+    }
+
+
     public static void main(String[] args) {
         // create an empty model
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
@@ -44,33 +110,24 @@ public class rdf_read {
             ColumnTypes.put(str + "_ID","int");
             System.out.println("Class is : " + str);
             if (ontClass.hasSuperClass()) {
-                List<String> subClasses;
-                String superClass;
-                if(ontClass.getSuperClass().getLabel("en")!=null && refInt.containsKey(ontClass.getSuperClass().getLabel("en"))){
-                    superClass = ontClass.getSuperClass().getLabel("en");
-                    subClasses = refInt.get(ontClass.getSuperClass().getLabel("en"));
+                List<String> superClass = new ArrayList<String>();
+                ExtendedIterator<OntClass> classes = ontClass.listSuperClasses();
+                while (classes.hasNext()){
+                    OntClass next = classes.next();
+                    String sup;
+                    if(next.getLabel("en")!=null){
+                        sup = next.getLabel("en");
+                    }
+                    else{
+                        sup = next.getLocalName();
+                    }
+                    superClass.add(sup);
+                    cols.add(sup+"_ID");
                 }
-                else if(ontClass.getSuperClass().getLocalName()!=null && refInt.containsKey(ontClass.getSuperClass().getLocalName())){
-                    System.out.println("onfoasndfas");
-                    superClass = ontClass.getSuperClass().getLocalName();
-                    subClasses = refInt.get(ontClass.getSuperClass().getLocalName());
-                }
-                else {
-                    subClasses = new ArrayList<String>();
-                    if (ontClass.getSuperClass().getLabel("en") == null)
-                        superClass = ontClass.getSuperClass().getLocalName();
-                    else
-                        superClass = ontClass.getSuperClass().getLabel("en");
-                }
-                subClasses.add(str);
-                refInt.put(superClass,subClasses);
-                String id = TableColumn.get(superClass).get(0);
-                cols.add(id);
-                System.out.println("SuperClass is : " + superClass);
+                refInt.put(str,superClass);
             }
             TableColumn.put(str,cols);
         }
-
 
         /////////////////////////////////////////////
         // Parsing owl file for object properties
@@ -173,14 +230,17 @@ public class rdf_read {
                 range = datatypeProperty.getRange().getLocalName();
             else
                 range = datatypeProperty.getRange().getLabel("en");
-
-
             System.out.println("Domain is: " + domain);
             List<String> str = TableColumn.get(domain);
             str.add(dpname);
             URItoName.put(datatypeProperty.getLocalName(),datatypeProperty.getLabel("en"));
             TableColumn.put(domain,str);
-            ColumnTypes.put(dpname,range);
+            String type;
+            if (range.equals("string"))
+                type = "VARCHAR(30)";
+            else
+                type = range;
+            ColumnTypes.put(dpname,type);
             System.out.println("Range is: " + range);
         }
 
@@ -223,7 +283,8 @@ public class rdf_read {
             Map.Entry<String, String> next = iterator3.next();
             System.out.println("Column is: " + next.getKey()+ " with Type: "+next.getValue());
         }
-
+//        rdf_read rdf = new rdf_read();
+//        rdf.CreateTables(TableColumn,ColumnTypes,refInt);
         StmtIterator stmtIterator = model.listStatements();
         while (stmtIterator.hasNext()) {
             System.out.println("*************************************");
