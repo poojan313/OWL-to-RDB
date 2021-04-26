@@ -7,7 +7,7 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:untitled-ontology-3="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#">
-    <owl:Ontology rdf:about="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3"/>
+
 
 
 <owl:Class rdf:ID="Opera">
@@ -29,19 +29,22 @@
 
 <owl:DatatypeProperty rdf:ID="last_name">
     <rdfs:label> last_name </rdfs:label>
-    <rdfs:domain rdf:resource="#Teacher,#Student" />
+    <rdfs:domain rdf:resource="#Teacher" />
+    <rdfs:domain rdf:resource="#Student" />
     <rdfs:range rdf:resource="xsd:string" />
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:ID="first_name">
     <rdfs:label> first_name </rdfs:label>
-    <rdfs:domain rdf:resource="#Teacher,#Student" />
+    <rdfs:domain rdf:resource="#Teacher" />
+    <rdfs:domain rdf:resource="#Student" />
     <rdfs:range rdf:resource="xsd:string" />
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:ID="Course">
     <rdfs:label> Course </rdfs:label>
     <rdfs:domain rdf:resource="#Teacher" />
+    <rdfs:domain rdf:resource="#Student" />
     <rdfs:range rdf:resource="xsd:string" />
 </owl:DatatypeProperty>
 
@@ -79,4 +82,5 @@
     <Course rdf:resource="#AI702" />
     <TaughtBy rdf:resource="T002" />
 </Student>
+
 </rdf:RDF>

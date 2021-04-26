@@ -27,7 +27,7 @@ public class rdf_read {
                 query += col + " " + types.get(col);
                 if (col.equals(name+"_ID"))
                 {
-                    query += " PRIMARY KEY AUTO INCREMENT";
+                    query += " PRIMARY KEY ";
                 }
                 query += ",";
             }
@@ -72,14 +72,20 @@ public class rdf_read {
             transaction.commit();
         }
     }
-
+    public void insertData(String query){
+        Session session = SessionUtils.getSession();
+        Transaction transaction = session.beginTransaction();
+        Query query1 = session.createSQLQuery(query);
+        query1.executeUpdate();
+        transaction.commit();
+    }
 
     public static void main(String[] args) {
         // create an empty model
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         String ns = "http://www.w3.org/2002/07/owl#";
         // use the RDFDataMgr to find the input file
-        InputStream in = RDFDataMgr.open("src/main/resources/protege.owl");
+        InputStream in = RDFDataMgr.open("src/main/resources/First.owl");
         if (in == null) {
             throw new IllegalArgumentException(
                     "File: sample.rdf +  not found");
@@ -87,6 +93,7 @@ public class rdf_read {
 
 // read the RDF/XML file
         model.read(in, null);
+        List<String> objProperties = new ArrayList<String>();
         HashMap<String,List<String>> refInt = new HashMap<String, List<String>>();
         HashMap<String,String> URItoName = new HashMap<String, String>();
         HashMap<String, List<String>> TableColumn = new HashMap<String, List<String>>();
@@ -107,7 +114,7 @@ public class rdf_read {
                 str = ontClass.getLocalName();
             }
             cols.add(str + "_ID");
-            ColumnTypes.put(str + "_ID","int");
+            ColumnTypes.put(str + "_ID","VARCHAR(30)");
             System.out.println("Class is : " + str);
             if (ontClass.hasSuperClass()) {
                 List<String> superClass = new ArrayList<String>();
@@ -143,6 +150,7 @@ public class rdf_read {
             else
                 opname = objectProperty.getLabel("en");
             System.out.println("Object property is : " + opname);
+            objProperties.add(opname);
             List<String> cols = new ArrayList<String>();
             URItoName.put(objectProperty.getLocalName(),objectProperty.getLabel("en"));
 //            System.out.println("Domain is: " + objectProperty.getDomain().toString());
@@ -222,19 +230,31 @@ public class rdf_read {
             else
                 dpname = datatypeProperty.getLabel("en");
             System.out.println("Datatype property is: " + dpname);
-            if(datatypeProperty.getDomain().getLabel("en")==null)
-                domain = datatypeProperty.getDomain().getLocalName();
-            else
-                domain = datatypeProperty.getDomain().getLabel("en");
+            URItoName.put(datatypeProperty.getLocalName(),datatypeProperty.getLabel("en"));
             if(datatypeProperty.getRange().getLabel("en")==null)
                 range = datatypeProperty.getRange().getLocalName();
             else
                 range = datatypeProperty.getRange().getLabel("en");
-            System.out.println("Domain is: " + domain);
-            List<String> str = TableColumn.get(domain);
-            str.add(dpname);
-            URItoName.put(datatypeProperty.getLocalName(),datatypeProperty.getLabel("en"));
-            TableColumn.put(domain,str);
+//            if(datatypeProperty.getDomain().getLabel("en")==null)
+//                    domain = datatypeProperty.getDomain().getLocalName();
+//                else
+//                    domain = datatypeProperty.getDomain().getLabel("en");
+//                System.out.println("Domain is: " + domain);
+//                List<String> str = TableColumn.get(domain);
+//                str.add(dpname);
+//                TableColumn.put(domain,str);
+            ExtendedIterator<? extends OntResource> extendedIterator1 = datatypeProperty.listDomain();
+            while (extendedIterator1.hasNext()){
+                OntResource next = extendedIterator1.next();
+                if(next.getLabel("en")==null)
+                    domain = next.getLocalName();
+                else
+                    domain = next.getLabel("en");
+                System.out.println("Domain is: " + domain);
+                List<String> str = TableColumn.get(domain);
+                str.add(dpname);
+                TableColumn.put(domain,str);
+            }
             String type;
             if (range.equals("string"))
                 type = "VARCHAR(30)";
@@ -283,32 +303,115 @@ public class rdf_read {
             Map.Entry<String, String> next = iterator3.next();
             System.out.println("Column is: " + next.getKey()+ " with Type: "+next.getValue());
         }
-//        rdf_read rdf = new rdf_read();
-//        rdf.CreateTables(TableColumn,ColumnTypes,refInt);
+
+        rdf_read rdf = new rdf_read();
+        rdf.CreateTables(TableColumn,ColumnTypes,refInt);
+        HashMap<String,HashMap<String,String>> dataItems = new HashMap<String,HashMap<String, String>>();
+        HashMap<String,HashMap<String,List<String>>> objItems = new HashMap<String, HashMap<String, List<String>>>();
+        HashMap<String,String> tableItems = new HashMap<String, String>();
+
         StmtIterator stmtIterator = model.listStatements();
         while (stmtIterator.hasNext()) {
-            System.out.println("*************************************");
             Statement statement = stmtIterator.nextStatement();
             Resource subject = statement.getSubject();
             Property predicate = statement.getPredicate();
             RDFNode object = statement.getObject();
-            System.out.println("Subject is: " + subject.getLocalName());
-            System.out.println("Predicate is: " + predicate.getLocalName());
+            String sub,pred,obj;
+            if(URItoName.containsKey(subject.getLocalName()) && URItoName.get(subject.getLocalName())!=null)
+                sub = URItoName.get(subject.getLocalName());
+            else
+                sub = subject.getLocalName();
+            if(URItoName.containsKey(predicate.getLocalName()) && URItoName.get(predicate.getLocalName())!=null)
+                pred = URItoName.get(predicate.getLocalName());
+            else
+                pred = predicate.getLocalName();
+
             if(object.isLiteral())
             {
-                System.out.println("Object is: " + object.asLiteral().getString());
+                obj = object.asLiteral().getString();
             }
-
             else if(object.isResource())
             {
-                System.out.println("Object asResource is: " + object.asResource().getLocalName());
+                 if(URItoName.containsKey(object.asResource().getLocalName()) && URItoName.get(object.asResource().getLocalName())!=null)
+                     obj = URItoName.get(object.asResource().getLocalName());
+                 else
+                     obj = object.asResource().getLocalName();
             }
-
             else
-                System.out.println("Object is: " + object.toString());
+               obj = object.toString();
+            if(!TableColumn.containsKey(sub) && !ColumnTypes.containsKey(sub) && !pred.equals("label")){
+                if(pred.equals("type") && TableColumn.containsKey(obj))
+                    tableItems.put(sub,obj);
+                else
+                {
+                    if(objProperties.contains(pred)){
+                        HashMap<String,List<String>> maps;
+                        if(objItems.containsKey(pred))
+                            maps = objItems.get(pred);
+                        else
+                            maps = new HashMap<String, List<String>>();
+                        List<String> maps2;
+                        if(maps.containsKey(sub))
+                            maps2 = maps.get(sub);
+                        else
+                            maps2 = new ArrayList<String>();
+                        maps2.add(obj);
+                        maps.put(sub,maps2);
+                        objItems.put(pred,maps);
+                    }
+                    else
+                    {
+                        HashMap<String,String> map;
+                        if(dataItems.containsKey(sub))
+                            map = dataItems.get(sub);
+                        else
+                            map = new HashMap<String, String>();
+                        map.put(pred,obj);
+                        dataItems.put(sub,map);
+                    }
 
+                }
+            }
         }
 
+        Iterator<Map.Entry<String, String>> iterator2 = tableItems.entrySet().iterator();
+        while (iterator2.hasNext()){
+            String query = "INSERT INTO ";
+            Map.Entry<String, String> next = iterator2.next();
+            query += next.getValue() +"(" + next.getValue() + "_ID,";
+            String query2 = "('" + next.getKey() + "',";
+            Iterator<Map.Entry<String, String>> iterator4 = dataItems.get(next.getKey()).entrySet().iterator();
+            while (iterator4.hasNext()){
+                Map.Entry<String, String> next1 = iterator4.next();
+                query += next1.getKey() +",";
+                if(ColumnTypes.get(next1.getKey()).equals("VARCHAR(30)"))
+                    query2 += "'" + next1.getValue() + "' ,";
+                else
+                    query2 += next1.getValue() + ",";
+            }
+            query = query.substring(0,query.length() - 1);
+            query += ") ";
+            query2 = query2.substring(0,query2.length() - 1);
+            query2 += ") ";
+            query = query + " VALUES " +query2;
+            System.out.println(query);
+            rdf.insertData(query);
+        }
+
+        Iterator<Map.Entry<String, HashMap<String, List<String>>>> iterator4 = objItems.entrySet().iterator();
+        while (iterator4.hasNext()){
+            Map.Entry<String, HashMap<String, List<String>>> next = iterator4.next();
+            Iterator<Map.Entry<String, List<String>>> iterator5 = next.getValue().entrySet().iterator();
+            while (iterator5.hasNext()){
+                Map.Entry<String, List<String>> next1 = iterator5.next();
+                Iterator<String> iterator6 = next1.getValue().iterator();
+                while (iterator6.hasNext()){
+                    String query = "INSERT INTO " + next.getKey() +" VALUES ('"+ next1.getKey() +"', '"+iterator6.next()+"')";
+                    System.out.println(query);
+                    rdf.insertData(query);
+                }
+            }
+        }
     }
 }
 
