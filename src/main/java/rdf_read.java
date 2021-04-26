@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.util.*;
 
 public class rdf_read {
-    public void CreateTables(HashMap<String,List<String>> tables,HashMap<String,String> types,HashMap<String,List<String>> references)
+    public void CreateTables(HashMap<String,List<String>> tables,HashMap<String,String> types,HashMap<String,List<String>> references,HashMap<String,String> copyRef)
     {
         List<String> all_q = new ArrayList<String>();
         Iterator<Map.Entry<String, List<String>>> iterator = tables.entrySet().iterator();
@@ -42,6 +42,7 @@ public class rdf_read {
             Session session = SessionUtils.getSession();
             Transaction transaction =session.beginTransaction();
             String next = iterator1.next();
+            System.out.println(next);
             Query query = session.createSQLQuery(next);
             query.executeUpdate();
             transaction.commit();
@@ -54,9 +55,18 @@ public class rdf_read {
             String name = next.getKey();
             String query = "ALTER TABLE "+ name ;
             Iterator<String> iterator3 = next.getValue().iterator();
+            int flag = 1;
             while (iterator3.hasNext()){
                 String next1 = iterator3.next();
-                query += " ADD FOREIGN KEY (" + next1 +"_ID) REFERENCES " + next1+"("+next1+"_ID),";
+                if (copyRef.containsKey(name) && flag==1)
+                {
+                    query += " ADD FOREIGN KEY (" + next1 +"_ID_REF) REFERENCES " + next1+"("+next1+"_ID),";
+                    flag = 0;
+                }
+                else
+                {
+                    query += " ADD FOREIGN KEY (" + next1 +"_ID) REFERENCES " + next1+"("+next1+"_ID),";
+                }
             }
             query = query.substring(0,query.length() - 1);
             updateQueries.add(query);
@@ -98,6 +108,8 @@ public class rdf_read {
         HashMap<String,String> URItoName = new HashMap<String, String>();
         HashMap<String, List<String>> TableColumn = new HashMap<String, List<String>>();
         HashMap<String, String> ColumnTypes = new HashMap<String, String>();
+        HashMap<String,String> copyRef = new HashMap<String, String>();
+
         ////////////////////////////////////////
         // Parsing owl file for classes
         ExtendedIterator<OntClass> iterator = model.listClasses();
@@ -199,9 +211,19 @@ public class rdf_read {
                 else
                     range = objectProperty.getRange().getLabel("en");
                 System.out.println("Domain is: " + domain);
-                cols.add(TableColumn.get(domain).get(0));
+                if(TableColumn.get(domain).get(0).equals(TableColumn.get(range).get(0)))
+                {
+                    copyRef.put(opname,TableColumn.get(range).get(0)+"_REF");
+                    cols.add(TableColumn.get(domain).get(0));
+                    cols.add(TableColumn.get(range).get(0)+"_REF");
+                    ColumnTypes.put(TableColumn.get(range).get(0)+"_REF","VARCHAR(30)");
+                }
+                else
+                {
+                    cols.add(TableColumn.get(domain).get(0));
+                    cols.add(TableColumn.get(range).get(0));
+                }
                 System.out.println("Range is: " + range);
-                cols.add(TableColumn.get(range).get(0));
                 TableColumn.put(opname,cols);
                 List<String> str1;
                 if(refInt.containsKey(opname)){
@@ -251,6 +273,18 @@ public class rdf_read {
                 else
                     domain = next.getLabel("en");
                 System.out.println("Domain is: " + domain);
+                ExtendedIterator<OntClass> classes = next.asClass().listSubClasses();
+                while (classes.hasNext()){
+                    OntClass next1 = classes.next();
+                    String subClass;
+                    if (next1.getLabel("en")==null)
+                        subClass = next1.getLocalName();
+                    else
+                        subClass = next1.getLabel("en");
+                    List<String> strings = TableColumn.get(subClass);
+                    strings.add(dpname);
+                    TableColumn.put(subClass,strings);
+                }
                 List<String> str = TableColumn.get(domain);
                 str.add(dpname);
                 TableColumn.put(domain,str);
@@ -305,7 +339,7 @@ public class rdf_read {
         }
 
         rdf_read rdf = new rdf_read();
-        rdf.CreateTables(TableColumn,ColumnTypes,refInt);
+        rdf.CreateTables(TableColumn,ColumnTypes,refInt,copyRef);
         HashMap<String,HashMap<String,String>> dataItems = new HashMap<String,HashMap<String, String>>();
         HashMap<String,HashMap<String,List<String>>> objItems = new HashMap<String, HashMap<String, List<String>>>();
         HashMap<String,String> tableItems = new HashMap<String, String>();
