@@ -314,7 +314,30 @@ public class rdf_final {
             Map.Entry<String, String> next = iterator3.next();
             System.out.println("Column is: " + next.getKey() + " with Type: " + next.getValue());
         }
+        System.out.println("Transitive properties---------------------");
+        ExtendedIterator transitiveProperties = model.listTransitiveProperties();
+        HashMap<String, List<String>> tp = new HashMap<String, List<String>>();
+        while (transitiveProperties.hasNext()) {
+            TransitiveProperty t = (TransitiveProperty) transitiveProperties.next();
+            System.out.println(t.getLocalName() + t.getDomain().getLocalName() + t.getRange().getLocalName());
+            String Subject=t.getLocalName();
+            String domain=t.getDomain().getLocalName();
+            String range=t.getRange().getLocalName();
+            tp.put(t.getLocalName(), new ArrayList<String>());
+            tp.get(t.getLocalName()).add(t.getDomain().getLocalName());
+            tp.get(t.getLocalName()).add(t.getRange().getLocalName());
+            List<String>cols=new ArrayList<String>();
 
+            objProperties.add(t.getLocalName());
+            cols.add(TableColumn.get(domain).get(0));
+            cols.add(TableColumn.get(range).get(0));
+            List<String> references;
+            references = new ArrayList<String>();
+            references.add(domain);
+            references.add(range);
+            refInt.put(t.getLocalName(), references);
+            TableColumn.put(Subject,cols);
+        }
         rdf_final rdf = new rdf_final();
         rdf.CreateTables(TableColumn, ColumnTypes, refInt, copyRef);
         // Structure eg map<T001,map<first_name,xyz last_name,abc>>
@@ -505,16 +528,7 @@ public class rdf_final {
 //        /////////////////////END IR//////////////////////////////////////////////////////
 //
 //        //Transitive Reasoning//////////////////////
-        System.out.println("Transitive properties---------------------");
-        ExtendedIterator transitiveProperties = model.listTransitiveProperties();
-        HashMap<String, List<String>> tp = new HashMap<String, List<String>>();
-        while (transitiveProperties.hasNext()) {
-            TransitiveProperty t = (TransitiveProperty) transitiveProperties.next();
-            System.out.println(t.getLocalName() + t.getDomain().getLocalName() + t.getRange().getLocalName());
-            tp.put(t.getLocalName(), new ArrayList<String>());
-            tp.get(t.getLocalName()).add(t.getDomain().getLocalName());
-            tp.get(t.getLocalName()).add(t.getRange().getLocalName());
-        }
+
         for (Map.Entry mapele : tp.entrySet()) {
             String p = (String) mapele.getKey();
             List<String> k = (List<String>) mapele.getValue();
@@ -562,42 +576,26 @@ public class rdf_final {
 
 
                                         //////////////////////////Enter into db//////////////////////////////////////
-//                                        for(int o=0;o<add.size();o++) {
-//                                            String sub = temp;
-//                                            String pred = p;
-//                                            String obj =add.get(o);
-//                                            if (!TableColumn.containsKey(sub) && !ColumnTypes.containsKey(sub) && !pred.equals("label")) {
-//                                                if (pred.equals("type") && TableColumn.containsKey(obj))
-//                                                    tableItems.put(sub, obj);
-//                                                else {
-//                                                    if (objProperties.contains(pred)) {
-//                                                        HashMap<String, List<String>> maps;
-//                                                        if (objItems.containsKey(pred))
-//                                                            maps = objItems.get(pred);
-//                                                        else
-//                                                            maps = new HashMap<String, List<String>>();
-//                                                        List<String> maps2;
-//                                                        if (maps.containsKey(sub))
-//                                                            maps2 = maps.get(sub);
-//                                                        else
-//                                                            maps2 = new ArrayList<String>();
-//                                                        maps2.add(obj);
-//                                                        maps.put(sub, maps2);
-//                                                        objItems.put(pred, maps);
-//                                                    } else {
-//                                                        HashMap<String, String> map;
-//                                                        if (dataItems.containsKey(sub))
-//                                                            map = dataItems.get(sub);
-//                                                        else
-//                                                            map = new HashMap<String, String>();
-//                                                        map.put(pred, obj);
-//                                                        dataItems.put(sub, map);
-//                                                    }
-//
-//                                                }
-//                                            }
-//                                        }
-                                        ////////////////////////////////////////////////////////////////
+                                        for(int o=0;o<add.size();o++) {
+                                            String sub = temp;
+                                            String pred = p;
+                                            String obj =add.get(o);
+                                            HashMap<String, List<String>> maps;
+                                            if (objItems.containsKey(pred))
+                                                maps = objItems.get(pred);
+                                            else
+                                                maps = new HashMap<String, List<String>>();
+                                            List<String> maps2;
+                                            if (maps.containsKey(sub))
+                                                maps2 = maps.get(sub);
+                                            else
+                                                maps2 = new ArrayList<String>();
+                                            maps2.add(obj);
+                                            maps.put(sub, maps2);
+                                            objItems.put(pred, maps);
+
+                                        }
+                                        ////////////////////////////Enter into Db ends////////////////////////////////////
                                     }
                                 }
                             }
