@@ -24,7 +24,7 @@ public class rdf_read {
         for(String s:cols){
             createTableQuery.append(s+" ");
             createTableQuery.append(sql.get(type.get(s))+" ");
-            if(name+"_ID"==s) {
+            if((name+"_ID").equals(s)){
                 createTableQuery
                         .append("Primary key"+", ");
                         }
@@ -48,7 +48,7 @@ public class rdf_read {
         String ns = "http://www.w3.org/2002/07/owl#";
         // use the RDFDataMgr to find the input file
 
-        InputStream in = RDFDataMgr.open( "src/main/resources/First.owl" );
+        InputStream in = RDFDataMgr.open( "src/main/resources/alt.owl" );
 
 //        InputStream in = RDFDataMgr.open("src/main/resources/protege.owl");
 
@@ -134,14 +134,7 @@ public class rdf_read {
         //End of master while
         }
 
-//        System.out.println("SOP---------------------------------------------------");
-//        StmtIterator stmtIterator = model.listStatements();
-//        while(stmtIterator.hasNext()) {
-//            Statement st = stmtIterator.next();
-//            Property p = st.getPredicate();
-//            RDFNode o = st.getObject();
-//            System.out.println(p + ":" + o);
-//        }
+//
         //==========================================================================================================
 
         for(int i=0;i<classes.size();i++){
@@ -289,17 +282,6 @@ public class rdf_read {
             }
 
         }
-//        Iterator<Map.Entry<String, List<String>>> iterator1 = refInt.entrySet().iterator();
-//        while (iterator1.hasNext()){
-//            Map.Entry<String, List<String>> next = iterator1.next();
-//            System.out.print("Table is: "+next.getKey()+" References are: ");
-//            List<String> value = next.getValue();
-//            Iterator<String> iterator2 = value.iterator();
-//            while (iterator2.hasNext()){
-//                System.out.print(iterator2.next()+" ");
-//            }
-//            System.out.println();
-//        }
         System.out.println("/**************************************************************/");
         ExtendedIterator<DatatypeProperty> iterator2 = model.listDatatypeProperties();
         while (iterator2.hasNext()) {
@@ -342,102 +324,6 @@ public class rdf_read {
 
         //        Doing this for making inferencing emgine==================================================================
 
-//        StmtIterator inditer = model.listStatements();
-//        while (inditer.hasNext()) {
-//            System.out.println("*************************************");
-//            Statement statement = inditer.nextStatement();
-//            System.out.println(statement);
-//            Resource subject = statement.getSubject();
-//            Property predicate = statement.getPredicate();
-//            RDFNode object = statement.getObject();
-//            System.out.println("Subject is: " + URItoName.get(subject.getLocalName()));
-//            System.out.println("Predicate is: " +URItoName.get(predicate.getLocalName()));
-//            System.out.println("Object is: " +object.toString());
-////            System.out.println(statement.asTriple());
-//        }
-//        Iterator<Map.Entry<String, List<String>>> it = TableColumn.entrySet().iterator();
-//        while (it.hasNext()){
-//            Map.Entry<String, List<String>> next = it.next();
-//            System.out.print("Table is: "+next.getKey()+" Columns are: ");
-//            List<String> value = next.getValue();
-//            Iterator<String> iterator2 = value.iterator();
-//            while (iterator2.hasNext()){
-//                System.out.print(iterator2.next()+" ");
-//            }
-//            System.out.println();
-//        }
-//        Iterator<Map.Entry<String, List<String>>> iterator1 = TableColumn.entrySet().iterator();
-//        while (iterator1.hasNext()){
-//            Map.Entry<String, List<String>> next = iterator1.next();
-//            System.out.print("Table is: "+next.getKey()+" Columns are: ");
-//            List<String> value = next.getValue();
-//            Iterator<String> iterator3 = value.iterator();
-//            while (iterator3.hasNext()){
-//                System.out.print(iterator3.next()+" ");
-//            }
-//            System.out.println();
-//        }
-//        Iterator<Map.Entry<String, String>> iterator1 = ColumnTypes.entrySet().iterator();
-//        while (iterator1.hasNext()){
-//            Map.Entry<String, String> next = iterator1.next();
-//            System.out.println("Column is: " + next.getKey()+ " with Type: "+next.getValue());
-//        }
-
-//        System.out.println("/**************************************************************/");
-//        ExtendedIterator<Individual> individualExtendedIterator = model.listIndividuals();
-//        while (individualExtendedIterator.hasNext()){
-//            Individual next = individualExtendedIterator.next();
-//            System.out.println(next.getLabel("en"));
-//            System.out.println("Belongs to: "+ next.getOntClass().getLabel("en"));
-//            StmtIterator iterator1 = next.listProperties();
-//            while (iterator1.hasNext()){
-//                Statement next1 = iterator1.next();
-//                System.out.println("Subject is : " +next1.getSubject().getLocalName());
-//                System.out.println("Predicte is: "+ next1.getPredicate().getLocalName());
-//
-//                if(next1.getObject().isResource()){
-//                    System.out.println("Object asResource is: "+ URItoName.get(next1.getObject().asResource().getLocalName()));
-//                }
-//                else{
-//                    System.out.println("Object is: "+ next1.getObject().toString());
-//                }
-//            }
-////
-//        }
-//        ExtendedIterator<AllDifferent> allDifferentExtendedIterator = model.listAllDifferent();
-//        while (allDifferentExtendedIterator.hasNext()){
-//            RDFList members = allDifferentExtendedIterator.next().getDistinctMembers();
-//            System.out.println(members.toString());
-//        }
-//        StmtIterator iterator2 = model.listStatements();
-//        while (iterator2.hasNext()) {
-//            System.out.println("*************************************");
-//            Statement statement = iterator2.nextStatement();
-//            Resource subject = statement.getSubject();
-//            Property predicate = statement.getPredicate();
-//            RDFNode object = statement.getObject();
-////            System.out.println(statement.getProperty(predicate).toString());
-//            System.out.println("Subject is: " + subject.getLocalName());
-//            System.out.println("Predicate is: " + predicate.getLocalName());
-//            if(object.isLiteral())
-//            {
-////                System.out.println("These values have to be added in the database");
-//                System.out.println("Object is: " + object.asLiteral().getString());
-//            }
-//
-//            else if(object.isResource())
-//            {
-////                StmtIterator iterator = subject.listProperties();
-////                while (iterator.hasNext()){
-////                    System.out.println("Properties for "+ subject.getLocalName()+ " is: "+ iterator.next().getSubject().getLocalName());
-////                }
-//                System.out.println("Object asResource is: " + object.asResource().getLocalName());
-//            }
-//
-//            else
-//                System.out.println("Object is: " + object.toString());
-//
-//        }
         ExtendedIterator nm = model.listIndividuals();
         HashMap<String,String> NM=new HashMap<String, String>();
         HashMap<String,String> inverse=new HashMap<String, String>();
@@ -458,7 +344,7 @@ public class rdf_read {
 
         HashMap<String, List<String>> stp = new HashMap<String, List<String>>();
         HashMap<List<String>, List<String>> pto = new HashMap<List<String>, List<String>>();
-
+        HashMap<String,List<String>>rev=new HashMap<String, List<String>>();
         StmtIterator indi = model.listStatements();
         while (indi.hasNext()) {
             System.out.println("*************************************");
@@ -528,6 +414,12 @@ public class rdf_read {
                 System.out.println("Object is: " + object.toString());
                 obj=object.toString();
             }
+            if(pred.equals("type")){
+                if(!rev.containsKey(obj)){
+                    rev.put(obj,new ArrayList<String>());
+                }
+                rev.get(obj).add(sub);
+            }
             if (!stp.containsKey(sub)){
                 stp.put(sub, new ArrayList<String>());
             }
@@ -586,8 +478,29 @@ public class rdf_read {
             }
 
         }
+        //Transistive Reasoning
+        System.out.println("Transitive properties---------------------");
+        ExtendedIterator transitiveProperties=model.listTransitiveProperties();
+        HashMap<String,List<String>> tp=new HashMap<String, List<String>>();
+        while (transitiveProperties.hasNext()){
+            TransitiveProperty t=(TransitiveProperty) transitiveProperties.next();
+//            System.out.println(t.getLabel("en")+t.getDomain().getLabel("en")+t.getRange().getLabel("en"));
+            tp.put(t.getLabel("en"),new ArrayList<String>());
+            tp.get(t.getLabel("en")).add(t.getDomain().getLabel("en"));
+            tp.get(t.getLabel("en")).add(t.getRange().getLabel("en"));
+        }
+        for (Map.Entry mapElement : tp.entrySet()){
+            String p=(String) mapElement.getKey();
+            List<String> k=(List<String>) mapElement.getValue();
+
+            String domain=k.get(0);
+            String range=k.get(1);
+
+            List<String>dom=rev.get(domain);
+            List<String>ran=rev.get(range);
 
 
+        }
 
         int a=1;
         while(a==1) {

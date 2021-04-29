@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#"
+     xml:base="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:untitled-ontology-3="http://www.semanticweb.org/rahul/ontologies/2021/1/untitled-ontology-3#">
+
+
+
+
+<owl:Class rdf:ID="Teacher"/>
+<owl:Class rdf:ID="Student"/>
+<owl:Class rdf:ID="Course"/>
+<owl:ObjectProperty rdf:ID="Teaches">
+    <rdfs:domain rdf:resource="#Teacher" />
+    <rdfs:range rdf:resource="#Course" />
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:ID="Studies">
+    <rdfs:domain rdf:resource="#Student" />
+    <rdfs:range rdf:resource="#Course" />
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="TaughtBy">
+    <owl:inverseOf rdf:resource="#Teaches" />
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="StudiedBy">
+    <owl:inverseOf rdf:resource="#Studies" />
+</owl:ObjectProperty>
+<owl:TransitiveProperty rdf:ID="profOf">
+  <rdfs:domain rdf:resource="#Teacher"/>
+  <rdfs:range  rdf:resource="#Student"/>
+</owl:TransitiveProperty>
+
+
+<owl:DatatypeProperty rdf:ID="last_name">
+    <rdfs:label> last_name </rdfs:label>
+    <rdfs:domain rdf:resource="#Teacher" />
+    <rdfs:domain rdf:resource="#Student" />
+    <rdfs:range rdf:resource="xsd:string" />
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:ID="first_name">
+    <rdfs:label> first_name </rdfs:label>
+    <rdfs:domain rdf:resource="#Teacher" />
+    <rdfs:domain rdf:resource="#Student" />
+    <rdfs:range rdf:resource="xsd:string" />
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:ID="Course_name">
+    <rdfs:label> Course_name </rdfs:label>
+    <rdfs:domain rdf:resource="#Course" />
+    <rdfs:range rdf:resource="xsd:string" />
+</owl:DatatypeProperty>
+
+<Course rdf:ID="CS506">
+    <rdfs:label>CS506</rdfs:label>
+    <Course_name>CS506</Course_name>
+</Course>
+
+<Course rdf:ID="AI702">
+    <rdfs:label>AI702</rdfs:label>
+    <Course_name>AI702</Course_name>
+</Course>
+
+<Teacher rdf:ID="T001">
+    <rdfs:label>T001</rdfs:label>
+    <first_name> XYZ </first_name>
+    <Teaches rdf:resource="#CS506" />
+</Teacher>
+
+<Teacher rdf:ID="T002">
+    <rdfs:label> T002 </rdfs:label>
+    <first_name> XYZ </first_name>
+    <last_name> ABC </last_name>
+    <Teaches rdf:resource="#AI702" />
+</Teacher>
+
+<Student rdf:ID="MT2020041">
+    <rdfs:label> MT2020041 </rdfs:label>
+    <first_name> Poojan </first_name>
+    <last_name> Khatri </last_name>
+    <Studies rdf:resource="#CS506" />
+</Student>
+<Student rdf:ID="MT2020014">
+    <rdfs:label> MT2020014 </rdfs:label>
+    <first_name> Rahul </first_name>
+    <last_name> Modak </last_name>
+    <Studies rdf:resource="#AI702" />
+</Student>
+
+
+
+</rdf:RDF>
+
