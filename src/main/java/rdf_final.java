@@ -1,5 +1,8 @@
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.util.FileManager;
 import org.apache.jena.util.iterator.ExtendedIterator;
@@ -92,7 +95,6 @@ public class rdf_final {
             throw new IllegalArgumentException(
                     "File: sample.rdf +  not found");
         }
-
 // read the RDF/XML file
         model.read(in, null);
         List<String> objProperties = new ArrayList<String>();
@@ -405,7 +407,7 @@ public class rdf_final {
             if (!stp.get(sub).contains(pred)) {
                 stp.get(sub).add(pred);
             }
-            stp.get(sub).add(pred);
+//            stp.get(sub).add(pred);
             List<String> list = new ArrayList<String>();
             list.add(sub);
             list.add(pred);
@@ -490,37 +492,24 @@ public class rdf_final {
                 String sub= objs.get(i);
                 String pred=p;
                 String obj=subs.get(i);
-                //Entering infered rules into db
-                if (!TableColumn.containsKey(sub) && !ColumnTypes.containsKey(sub) && !pred.equals("label")) {
-                    if (pred.equals("type") && TableColumn.containsKey(obj))
-                        tableItems.put(sub, obj);
-                    else {
-                        if (objProperties.contains(pred)) {
-                            HashMap<String, List<String>> maps;
-                            if (objItems.containsKey(pred))
-                                maps = objItems.get(pred);
-                            else
-                                maps = new HashMap<String, List<String>>();
-                            List<String> maps2;
-                            if (maps.containsKey(sub))
-                                maps2 = maps.get(sub);
-                            else
-                                maps2 = new ArrayList<String>();
-                            maps2.add(obj);
-                            maps.put(sub, maps2);
-                            objItems.put(pred, maps);
-                        } else {
-                            HashMap<String, String> map;
-                            if (dataItems.containsKey(sub))
-                                map = dataItems.get(sub);
-                            else
-                                map = new HashMap<String, String>();
-                            map.put(pred, obj);
-                            dataItems.put(sub, map);
-                        }
+                //Entering inverse infered rules into db
 
-                    }
-                }
+                HashMap<String, List<String>> maps;
+                if (objItems.containsKey(pred))
+                    maps = objItems.get(pred);
+                else
+                    maps = new HashMap<String, List<String>>();
+                List<String> maps2;
+                if (maps.containsKey(sub))
+                    maps2 = maps.get(sub);
+                else
+                    maps2 = new ArrayList<String>();
+                maps2.add(obj);
+                maps.put(sub, maps2);
+                objItems.put(pred, maps);
+
+
+
             }
 
         }
@@ -658,6 +647,7 @@ public class rdf_final {
             }
 
             ///Inferencing loop/////////////////////////////////////
+
         int a=1;
         while(a==1) {
             System.out.println("select subject from following list:");
